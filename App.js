@@ -4,7 +4,8 @@ import { createStackNavigator } from '@react-navigation/stack';
 import Login from './components/Login';
 import SignUp from './components/SignUp';
 import Dashboard from './components/Dashboard';
-import DashboardON from './components/DashboardON';
+import Drying from './components/Drying';
+import Temperature from './components/Temperature';
 
 const Stack = createStackNavigator();
 
@@ -15,8 +16,9 @@ function App() {
         <Stack.Screen name = "Login" component = {Login}  options = {{ headerShown: false }}/>
         <Stack.Screen name = 'SignUp' component = {SignUp} options = {{ headerShown: false }} />
         <Stack.Screen name = "Dashboard" component = {Dashboard} options = {{ headerShown: false }} />
-        <Stack.Screen name =  "DashboardON" component = {DashboardON} options = {{ headerShown: false }}/> 
-    
+        <Stack.Screen name= "Drying" component={Drying} options={{ title: 'Drying Status' }} />
+        <Stack.Screen name= "Temperature" component={Temperature} options={{ title: 'Temperature' }} />
+
       </Stack.Navigator>
     </NavigationContainer>
   );
