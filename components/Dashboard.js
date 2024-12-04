@@ -6,6 +6,7 @@ import styles from './DashboardStyles';
 
 const Dashboard = ({ navigation }) => {
   const [isOn, setIsOn] = useState(false);
+  const [dryingStatus, setDryingStatus] = useState('Inactive');
   const [isNotificationVisible, setIsNotificationVisible] = useState(false);
 
   const route = useRoute();
@@ -45,6 +46,23 @@ const Dashboard = ({ navigation }) => {
 
   const toggleNotification = () => {
     setIsNotificationVisible(!isNotificationVisible);
+  };
+
+  const handleDryingStart = () => {
+    Alert.alert(
+      'Start Drying Process',
+      'Do you want to start the drying process?',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Start',
+          onPress: () => {
+            setDryingStatus('Active');
+            navigation.navigate('Drying');
+          },
+        },
+      ]
+    );
   };
 
   return (
@@ -94,10 +112,10 @@ const Dashboard = ({ navigation }) => {
         <View style={styles.infoBoxContainer}>
           <TouchableOpacity
             style={styles.infoBox}
-            onPress={() => navigation.navigate('Drying')}
+            onPress={handleDryingStart}
           >
             <Ionicons name="water-outline" size={24} color="gray" />
-            <Text style={styles.infoText}>INACTIVE</Text>
+            <Text style={styles.infoText}>{dryingStatus}</Text>
             <Text style={styles.infoSubText}>DRYING</Text>
             <Ionicons name="chevron-forward-outline" size={24} color="gray" />
           </TouchableOpacity>

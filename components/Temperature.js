@@ -3,23 +3,43 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from "react-nati
 import { LineChart } from "react-native-chart-kit";
 import { faker } from "@faker-js/faker";
 
+const generateFakeTemperatureDataPoint = () => ({
+  temperature: faker.number.int({ min: 20, max: 100 }),
+  timestamp: Date.now(),
+});
+
 const Temperature = ({ navigation }) => {
   const [currentTemperature, setCurrentTemperature] = useState(null);
+  const [temperatureData, setTemperatureData] = useState(() =>
+    Array.from({ length: 5 }, () => generateFakeTemperatureDataPoint())
+  );
 
-  const generateFakeTemperatureData = (count) => {
-    const now = Date.now();
-    return Array.from({ length: count }, (_, index) => ({
-      temperature: faker.number.int({ min: 20, max: 100 }),
-      timestamp: now - index * 3600000,
-    })).reverse();
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const newDataPoint = generateFakeTemperatureDataPoint();
+      setTemperatureData((prevData) => {
+        const updatedData = [...prevData.slice(1), newDataPoint];
+        setCurrentTemperature(updatedData[updatedData.length - 1].temperature);
+        return updatedData;
+      });
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  const handleTemperatureChange = () => {
+    const newDataPoint = generateFakeTemperatureDataPoint();
+    setTemperatureData((prevData) => {
+      const updatedData = [...prevData.slice(1), newDataPoint];
+      setCurrentTemperature(newDataPoint.temperature);
+      return updatedData;
+    });
+
+    navigation.navigate("Dashboard", { currentTemperature: newDataPoint.temperature });
   };
 
-  const temperatureData = generateFakeTemperatureData(10);
-
-  const limitedTemperatureData = temperatureData.slice(0, 5);
-
   const chartData = {
-    labels: limitedTemperatureData.map((entry) => {
+    labels: temperatureData.map((entry) => {
       const date = new Date(entry.timestamp);
       return `${date.getHours()}:${date
         .getMinutes()
@@ -28,21 +48,10 @@ const Temperature = ({ navigation }) => {
     }),
     datasets: [
       {
-        data: limitedTemperatureData.map((entry) => entry.temperature),
+        data: temperatureData.map((entry) => entry.temperature),
         strokeWidth: 2,
       },
     ],
-  };
-
-  useEffect(() => {
-    if (temperatureData.length > 0) {
-      setCurrentTemperature(temperatureData[0].temperature);
-    }
-  }, [temperatureData]);
-
-  const handleTemperatureChange = (temperature) => {
-    setCurrentTemperature(temperature);
-    navigation.navigate('Dashboard', { currentTemperature: temperature });
   };
 
   return (
@@ -70,7 +79,7 @@ const Temperature = ({ navigation }) => {
         }}
       />
       <Text style={styles.infoText}>
-        Temperature graph over 1 hour interval.
+        Temperature graph updated every 5 seconds
       </Text>
 
       <View style={styles.infoBoxContainer}>
@@ -84,7 +93,7 @@ const Temperature = ({ navigation }) => {
 
       <TouchableOpacity
         style={styles.button}
-        onPress={() => handleTemperatureChange(currentTemperature)}
+        onPress={handleTemperatureChange}
       >
         <Text style={styles.buttonText}>Update Temperature</Text>
       </TouchableOpacity>

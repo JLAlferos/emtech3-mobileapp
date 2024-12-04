@@ -3,13 +3,10 @@ import { View, Text, StyleSheet, TextInput, TouchableOpacity, Pressable, Image, 
 import logoImage from 'C:/Users/admin/Documents/Emtech3-HOA/MobileAppProj/assets/seaweed-logo.jpg';
 
 const Login = ({ navigation }) => {
-  // State to store the user input for username and password
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
-  // Function to handle the login process
   const handleLogin = () => {
-    // Check if the fields are empty or if credentials are incorrect
     if (!username || !password) {
       Alert.alert('Error', 'Please enter both username and password.');
     } else if (username !== 'admin' || password !== 'admin') {
