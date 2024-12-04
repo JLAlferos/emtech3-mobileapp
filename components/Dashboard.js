@@ -1,16 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useRoute } from '@react-navigation/native';
 import styles from './DashboardStyles';
 
 const Dashboard = ({ navigation }) => {
-  // State to toggle between ON and OFF
   const [isOn, setIsOn] = useState(false);
 
-  // Handle the toggle status change
+  const route = useRoute();
+  const { currentTemperature } = route.params || {};
+
   const handleStatusPress = () => {
     if (isOn) {
-      // If the machine is ON, ask to turn it OFF
       Alert.alert(
         'Message Warning',
         'Are you sure you want to turn the machine OFF?',
@@ -19,13 +20,12 @@ const Dashboard = ({ navigation }) => {
           {
             text: 'Confirm',
             onPress: () => {
-              setIsOn(false); // Set to OFF
+              setIsOn(false);
             },
           },
         ]
       );
     } else {
-      // If the machine is OFF, ask to turn it ON
       Alert.alert(
         'Message Warning',
         'Are you sure you want to turn the machine ON?',
@@ -34,7 +34,7 @@ const Dashboard = ({ navigation }) => {
           {
             text: 'Confirm',
             onPress: () => {
-              setIsOn(true); // Set to ON
+              setIsOn(true);
             },
           },
         ]
@@ -56,17 +56,15 @@ const Dashboard = ({ navigation }) => {
 
       <Text style={styles.statusText}>Status</Text>
 
-      {/* Status Circle with dynamic styles based on isOn */}
       <TouchableOpacity
         style={[styles.statusCircle, isOn ? styles.statusCircleOn : styles.statusCircleOff]}
         onPress={handleStatusPress}
       >
-        <Text style={isOn ? styles.statusLabelOn : styles.statusLabel}> 
+        <Text style={isOn ? styles.statusLabelOn : styles.statusLabel}>
           {isOn ? 'On' : 'Off'}
         </Text>
       </TouchableOpacity>
 
-      {/* Info Box when OFF */}
       {!isOn && (
         <View style={styles.infoBoxContainer}>
           <View style={styles.infoBox}>
@@ -75,7 +73,6 @@ const Dashboard = ({ navigation }) => {
         </View>
       )}
 
-      {/* Info Box only visible when ON */}
       {isOn && (
         <View style={styles.infoBoxContainer}>
           <TouchableOpacity
@@ -94,7 +91,7 @@ const Dashboard = ({ navigation }) => {
           >
             <Ionicons name="thermometer-outline" size={24} color="gray" />
             <Text style={styles.infoText}>TEMPERATURE</Text>
-            <Text style={styles.infoSubText}>80°C</Text>
+            <Text style={styles.infoSubText}>{currentTemperature || 'Loading...'}</Text>
             <Ionicons name="chevron-forward-outline" size={24} color="gray" />
           </TouchableOpacity>
         </View>
