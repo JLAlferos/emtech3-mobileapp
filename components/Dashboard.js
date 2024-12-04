@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRoute } from '@react-navigation/native';
@@ -6,6 +6,7 @@ import styles from './DashboardStyles';
 
 const Dashboard = ({ navigation }) => {
   const [isOn, setIsOn] = useState(false);
+  const [isNotificationVisible, setIsNotificationVisible] = useState(false);
 
   const route = useRoute();
   const { currentTemperature } = route.params || {};
@@ -42,17 +43,33 @@ const Dashboard = ({ navigation }) => {
     }
   };
 
+  const toggleNotification = () => {
+    setIsNotificationVisible(!isNotificationVisible);
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
         <Text style={styles.headerText}>Seaweed Drying Machine</Text>
-        <Ionicons
-          name="notifications-outline"
-          size={30}
-          color="black"
-          style={styles.notificationIcon}
-        />
+        <TouchableOpacity
+          onPress={toggleNotification}
+        >
+          <Ionicons
+            name="notifications-outline"
+            size={30}
+            color="black"
+            style={styles.notificationIcon}
+          />
+        </TouchableOpacity>
       </View>
+
+      {isNotificationVisible && (
+        <View style={styles.notificationTray}>
+          <Text style={styles.notificationText}>
+            Drying was completed @ {new Date().toLocaleString()}
+          </Text>
+        </View>
+      )}
 
       <Text style={styles.statusText}>Status</Text>
 
