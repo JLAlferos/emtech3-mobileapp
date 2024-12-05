@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, Pressable, Image, Alert } from 'react-native';
-import logoImage from 'C:/Users/admin/Documents/Emtech3-HOA/MobileAppProj/assets/seaweed-logo.jpg';
+import logoImage from '../assets/seaweed-logo.jpg';
 
 const Login = ({ navigation }) => {
   const [username, setUsername] = useState('');
